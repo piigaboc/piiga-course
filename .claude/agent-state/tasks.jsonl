@@ -8,4 +8,5 @@
 {"id":"20260628-221140-978-frontend","agent":"frontend","task":"Frontend scaffold theme auth","status":"done","startedAt":"2026-06-28 22:11:40","finishedAt":"2026-06-28 22:17:21"}
 {"id":"20260628-221758-080-frontend","agent":"frontend","task":"Frontend feature pages","status":"done","startedAt":"2026-06-28 22:17:58","finishedAt":"2026-06-28 22:27:00"}
 {"id":"20260628-222721-666-reviewer","agent":"reviewer","task":"Security correctness review","status":"done","startedAt":"2026-06-28 22:27:21","finishedAt":"2026-06-28 22:28:34"}
-{"id":"20260628-222901-142-backend","agent":"backend","task":"Fix security review findings","status":"in-progress","startedAt":"2026-06-28 22:29:01","finishedAt":""}
+{"id":"20260628-222901-142-backend","agent":"backend","task":"Fix security review findings","status":"done","startedAt":"2026-06-28 22:29:01","finishedAt":"2026-06-29 10:41:14"}
+{"id":"20260629-110957-452-devops","agent":"devops","task":"Make DATABASE_URL Neon-ready","status":"done","startedAt":"2026-06-29 11:09:57","finishedAt":"2026-06-29 11:15:22"}

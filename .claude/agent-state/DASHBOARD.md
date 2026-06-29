@@ -11,7 +11,7 @@ Defined in `.claude/agents/`. Status legend: 🟢 idle/ready · 🟡 working · 
 | 🧭 `lead` | Tech lead / orchestrator — decomposes features, routes steps to specialists (plan only) | opus | Read, Glob, Grep | 🟢 idle | — | — |
 | 📱 `mobile` | Flutter/Dart, iOS/Android native modules, mobile unit tests | opus | Read, Write, Edit, Glob, Grep, Bash | 🟢 idle | — | — |
 | 🖥️ `frontend` | React/Next/TS/Vue, browser ext, HTML/CSS/JS, frontend unit tests | opus | Read, Write, Edit, Glob, Grep, Bash | 🟢 idle | — | — |
-| ⚙️ `backend` | Python services, DB schema/queries, business logic, API design | opus | Read, Write, Edit, Glob, Grep, Bash | 🟡 working | piigacourse | Fix security review findings |
+| ⚙️ `backend` | Python services, DB schema/queries, business logic, API design | opus | Read, Write, Edit, Glob, Grep, Bash | 🟢 idle | — | — |
 | 🎨 `designer` | Design specs, wireframes, component specs, design tokens, a11y review | opus | Read, Write, Glob, Grep | 🟢 idle | — | — |
 | 🧪 `qa` | Integration/E2E tests, edge-case analysis, regression suites | opus | Read, Write, Edit, Glob, Grep, Bash | 🟢 idle | — | — |
 | 🔍 `reviewer` | Correctness, code quality, security, perf review (gate before release) | opus | Read, Glob, Grep, Bash | 🟢 idle | — | — |
@@ -30,4 +30,4 @@ For agents actually running right now (in-progress / completed / failed), this s
 **not** track that — use the live task list or the `/workflows` view instead. This file is the squad
 overview and a place to jot the current assignment per agent.
 
-_Last updated: 2026-06-28 22:29_
+_Last updated: 2026-06-29 11:15_

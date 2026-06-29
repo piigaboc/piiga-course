@@ -12,7 +12,7 @@ from logging.config import fileConfig
 
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import async_engine_from_config
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from alembic import context
 
@@ -26,8 +26,11 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Inject the async DSN from app settings.
-config.set_main_option("sqlalchemy.url", get_settings().DATABASE_URL)
+# Inject the normalized async DSN from app settings. The raw ``DATABASE_URL``
+# (which may be a raw Neon URL with ``sslmode=``/``channel_binding=``) is
+# normalized to an asyncpg-safe URL; SSL is supplied via ``connect_args`` on the
+# async engine below. See app.config.normalize_async_dsn.
+config.set_main_option("sqlalchemy.url", get_settings().async_database_url)
 
 target_metadata = Base.metadata
 
@@ -58,10 +61,11 @@ def do_run_migrations(connection: Connection) -> None:
 
 async def run_migrations_online() -> None:
     """Create an async engine and run migrations through ``run_sync``."""
-    connectable = async_engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
+    settings = get_settings()
+    connectable = create_async_engine(
+        settings.async_database_url,
         poolclass=pool.NullPool,
+        connect_args=settings.db_connect_args,
     )
 
     async with connectable.connect() as connection:
