@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PiigaCourse — Deployment Guide</title>
+<style>
+  :root {
+    --bg: #FAFAF9;
+    --surface: #FFFFFF;
+    --surface-2: #F5F5F4;
+    --border: #E7E5E4;
+    --text: #1C1917;
+    --muted: #78716C;
+    --accent: #1C1917;
+    --green-0: #F0FDF4;
+    --green-1: #DCFCE7;
+    --green-3: #3FB46B;
+    --green-4: #1F8A4C;
+    --green-ink: #14532D;
+    --radius: 10px;
+    --shadow-sm: 0 1px 2px rgba(28,25,23,.06);
+    --shadow-md: 0 4px 16px rgba(28,25,23,.08);
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1C1917; --surface: #292524; --surface-2: #211E1C;
+      --border: #3A3531; --text: #F5F5F4; --muted: #A8A29E;
+      --accent: #F5F5F4; --green-0: #14271B; --green-1: #1B3A28;
+      --green-ink: #BBF7D0; --shadow-md: 0 4px 16px rgba(0,0,0,.4);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: var(--sans); font-size: 15px; line-height: 1.6;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 24px 80px; }
+  .layout { display: grid; grid-template-columns: 220px 1fr; gap: 40px; align-items: start; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } nav.toc { position: static !important; } }
+
+  /* Terminal header */
+  .term {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--surface); box-shadow: var(--shadow-md); overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .term__bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; background: var(--surface-2);
+    border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 12.5px;
+    color: var(--muted);
+  }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .dot.r { background: #EF6F6C; } .dot.a { background: #E3B341; } .dot.g { background: var(--green-3); }
+  .term__path { margin-left: 8px; }
+  .term__body { padding: 26px 28px; }
+  h1 { font-size: 27px; margin: 0 0 6px; letter-spacing: -.02em; }
+  .sub { color: var(--muted); margin: 0 0 4px; }
+
+  nav.toc {
+    position: sticky; top: 24px; font-size: 13.5px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--surface); padding: 16px 14px;
+  }
+  nav.toc strong { display:block; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 10px; }
+  nav.toc a { display: block; color: var(--text); text-decoration: none; padding: 5px 8px; border-radius: 6px; }
+  nav.toc a:hover { background: var(--surface-2); }
+
+  section { margin-bottom: 40px; }
+  h2 { font-size: 20px; margin: 0 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); scroll-margin-top: 20px; }
+  h2 .num { font-family: var(--mono); color: var(--green-4); font-size: 16px; margin-right: 8px; }
+  h3 { font-size: 15.5px; margin: 22px 0 8px; }
+  p { margin: 10px 0; }
+  ul, ol { margin: 10px 0; padding-left: 22px; }
+  li { margin: 5px 0; }
+  code { font-family: var(--mono); font-size: 13px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; }
+  pre { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; overflow-x: auto; box-shadow: var(--shadow-sm); }
+  pre code { background: none; border: none; padding: 0; font-size: 12.5px; line-height: 1.7; display: block; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; }
+  th, td { text-align: left; padding: 9px 12px; border: 1px solid var(--border); vertical-align: top; }
+  th { background: var(--surface-2); font-family: var(--mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  td code { font-size: 12px; }
+  tr:nth-child(even) td { background: var(--surface-2); }
+
+  .req { color: var(--green-4); font-weight: 600; font-family: var(--mono); font-size: 12px; }
+  .opt { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+
+  .callout { border-left: 3px solid var(--green-3); background: var(--green-0); color: var(--green-ink); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 14px 0; }
+  .callout.warn { border-left-color: #E3B341; background: rgba(227,179,65,.10); color: var(--text); }
+  .callout strong { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+
+  .arch { font-family: var(--mono); font-size: 12.5px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; white-space: pre; overflow-x: auto; line-height: 1.5; }
+
+  footer { margin-top: 50px; padding-top: 18px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12.5px; font-family: var(--mono); }
+  a.ext { color: var(--green-4); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="term">
+    <div class="term__bar">
+      <span class="dot r"></span><span class="dot a"></span><span class="dot g"></span>
+      <span class="term__path">~/piigacourse/DEPLOYMENT.html</span>
+    </div>
+    <div class="term__body">
+      <h1>PiigaCourse — Deployment Guide</h1>
+      <p class="sub">Single-user online-course tracker · React 18 + Vite + TS frontend · FastAPI + SQLAlchemy 2.0 async backend · PostgreSQL</p>
+      <p>Auth is password + <strong>TOTP MFA</strong> (JWT). Features include a courses list and a study <strong>calendar</strong> with a GitHub-style green heatmap, in a warm "stone" theme. This guide covers deploying to <strong>Neon</strong> (database) → <strong>Render</strong> (backend) → <strong>Vercel</strong> (frontend), plus every gotcha hit along the way.</p>
+    </div>
+  </div>
+
+  <div class="layout">
+    <nav class="toc">
+      <strong>Contents</strong>
+      <a href="#arch">Architecture</a>
+      <a href="#neon">1 · Neon (database)</a>
+      <a href="#render">2 · Render (backend)</a>
+      <a href="#vercel">3 · Vercel (frontend)</a>
+      <a href="#migrations">4 · Migrations</a>
+      <a href="#local">5 · Local dev</a>
+      <a href="#trouble">6 · Troubleshooting</a>
+      <a href="#envref">7 · Env var reference</a>
+    </nav>
+
+    <main>
+      <section id="arch">
+        <h2><span class="num">#</span>Architecture</h2>
+        <div class="arch">Vercel  ──HTTPS──▶  Render  ──asyncpg/SSL──▶  Neon
+(static Vite SPA)   (FastAPI web service)     (Postgres)
+
+  VITE_API_BASE_URL ──▶ https://&lt;render&gt;/api
+  CORS_ORIGINS      ──▶ https://&lt;vercel&gt;
+  DATABASE_URL      ──▶ Neon connection string</div>
+        <p>Each hop is wired by one environment variable: the frontend's <code>VITE_API_BASE_URL</code> points at the Render URL + <code>/api</code>; Render's <code>CORS_ORIGINS</code> must list the Vercel URL; Render's <code>DATABASE_URL</code> points at Neon.</p>
+      </section>
+
+      <section id="neon">
+        <h2><span class="num">1</span>Neon — database (do this first)</h2>
+        <ol>
+          <li>Create a Neon project. Pick a region close to your Render region.</li>
+          <li>Copy the connection string from the Neon dashboard. It looks like:
+            <pre><code>postgresql://user:pass@ep-xxx.us-east-2.aws.neon.tech/neondb?sslmode=require&amp;channel_binding=require</code></pre>
+          </li>
+          <li>Paste that <strong>raw URL</strong> straight into Render's <code>DATABASE_URL</code> — no editing.</li>
+        </ol>
+        <div class="callout">
+          <strong>No manual URL surgery needed.</strong> The backend auto-normalizes the connection string: it rewrites the scheme to <code>postgresql+asyncpg://</code>, strips the libpq-only params asyncpg rejects (<code>sslmode</code>, <code>channel_binding</code>, …), and enables SSL via <code>connect_args</code> for remote hosts. Local <code>localhost</code> URLs get no SSL.
+        </div>
+      </section>
+
+      <section id="render">
+        <h2><span class="num">2</span>Render — backend (FastAPI web service)</h2>
+        <p>New → <strong>Web Service</strong> → connect the GitHub repo <a class="ext" href="https://github.com/piigaboc/piiga-course">github.com/piigaboc/piiga-course</a>.</p>
+        <table>
+          <tr><th>Setting</th><th>Value</th></tr>
+          <tr><td>Root Directory</td><td><code>backend</code></td></tr>
+          <tr><td>Runtime</td><td>Python 3 — set env <code>PYTHON_VERSION = 3.12.2</code></td></tr>
+          <tr><td>Build Command</td><td><code>pip install -r requirements.txt</code></td></tr>
+          <tr><td>Start Command</td><td><code>uvicorn app.main:app --host 0.0.0.0 --port $PORT</code></td></tr>
+          <tr><td>Pre-Deploy Command</td><td><code>alembic upgrade head</code> (runs migrations on each deploy)</td></tr>
+        </table>
+
+        <h3>Environment variables</h3>
+        <table>
+          <tr><th>Key</th><th>Example</th><th>Required</th></tr>
+          <tr><td><code>DATABASE_URL</code></td><td>Neon raw URL (see §1)</td><td><span class="req">required</span></td></tr>
+          <tr><td><code>SECRET_KEY</code></td><td><code>openssl rand -hex 32</code> (≥32 chars)</td><td><span class="req">required</span></td></tr>
+          <tr><td><code>CORS_ORIGINS</code></td><td><code>https://&lt;your-app&gt;.vercel.app</code></td><td><span class="req">required</span></td></tr>
+          <tr><td><code>BOOTSTRAP_EMAIL</code></td><td>your login email</td><td><span class="req">required</span></td></tr>
+          <tr><td><code>BOOTSTRAP_PASSWORD</code></td><td>a strong password (placeholders rejected)</td><td><span class="req">required</span></td></tr>
+          <tr><td><code>ACCESS_TOKEN_EXPIRE_MIN</code></td><td><code>60</code></td><td><span class="opt">optional</span></td></tr>
+          <tr><td><code>MFA_PENDING_EXPIRE_MIN</code></td><td><code>5</code></td><td><span class="opt">optional</span></td></tr>
+        </table>
+        <div class="callout warn">
+          <strong>Keep SECRET_KEY stable.</strong> It signs JWT login tokens. If you change it after going live, every existing session is invalidated and users are forced to log in again.
+        </div>
+        <p>The single user account is created automatically on startup from <code>BOOTSTRAP_*</code> (idempotent). Check the Render <strong>Logs</strong> for <code>Bootstrap: created single user …</code> — if you see <code>Bootstrap SKIPPED</code>, the bootstrap vars are missing or placeholder.</p>
+
+        <h3>Verify</h3>
+        <table>
+          <tr><th>URL</th><th>Expected</th></tr>
+          <tr><td><code>/api/health</code></td><td><code>{"status":"ok"}</code> ✅</td></tr>
+          <tr><td><code>/api/docs</code></td><td>Swagger UI</td></tr>
+          <tr><td><code>/</code> (root)</td><td><code>{"detail":"Not Found"}</code> — <strong>expected</strong>, all routes live under <code>/api</code>. It means the app is up.</td></tr>
+        </table>
+      </section>
+
+      <section id="vercel">
+        <h2><span class="num">3</span>Vercel — frontend (Vite SPA)</h2>
+        <ol>
+          <li>New Project → import the repo → <strong>Root Directory</strong>: <code>frontend</code>.</li>
+          <li>Framework preset: <strong>Vite</strong> (Build <code>npm run build</code>, Output <code>dist</code>).</li>
+          <li>Add env var: <code>VITE_API_BASE_URL = https://&lt;service&gt;.onrender.com/api</code></li>
+          <li>Deploy. Then set Render's <code>CORS_ORIGINS</code> to the exact Vercel URL (no trailing slash) and redeploy the backend.</li>
+        </ol>
+        <div class="callout warn">
+          <strong>Vite bakes env vars at build time.</strong> After changing <code>VITE_API_BASE_URL</code> you must <strong>Redeploy</strong> — it won't take effect on a live build. Only <code>VITE_</code>-prefixed vars are exposed to the frontend.
+        </div>
+        <p><strong>Order of operations:</strong> deploy backend first to get its URL → deploy frontend with that URL → set backend <code>CORS_ORIGINS</code> to the Vercel URL → redeploy backend.</p>
+      </section>
+
+      <section id="migrations">
+        <h2><span class="num">4</span>Database migrations (Alembic)</h2>
+        <p>Run from the <code>backend</code> directory (where <code>alembic.ini</code> lives). On Render, set it as the Pre-Deploy Command or run once in the <strong>Shell</strong> tab.</p>
+        <table>
+          <tr><th>Command</th><th>Result</th></tr>
+          <tr><td><code>alembic upgrade head</code></td><td>✅ correct (CLI)</td></tr>
+          <tr><td><code>python -m alembic upgrade head</code></td><td>✅ correct (module form)</td></tr>
+          <tr><td><code>python alembic upgrade head</code></td><td>❌ runs the <code>alembic/</code> folder → <code>can't find '__main__' module</code></td></tr>
+        </table>
+        <p>Locally, make sure <code>DATABASE_URL</code> and <code>SECRET_KEY</code> are set (or in <code>backend\.env</code>) first:</p>
+        <pre><code>cd D:\claude\piigacourse\backend
+.\.venv\Scripts\Activate.ps1
+alembic upgrade head</code></pre>
+      </section>
+
+      <section id="local">
+        <h2><span class="num">5</span>Local development (quick reference)</h2>
+        <pre><code># 1. Postgres
+docker compose up -d
+
+# 2. Backend (PowerShell)
+cd backend
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+Copy-Item .env.example .env        # then edit values
+alembic upgrade head
+python -m app.bootstrap            # seed the single user
+uvicorn app.main:app --reload --port 8000   # http://localhost:8000/api/docs
+
+# 3. Frontend
+cd ..\frontend
+npm install
+npm run dev                        # http://localhost:5173</code></pre>
+        <p>In local dev the Vite dev server proxies <code>/api</code> → <code>localhost:8000</code>, so <code>VITE_API_BASE_URL</code> can stay <code>/api</code>.</p>
+      </section>
+
+      <section id="trouble">
+        <h2><span class="num">6</span>Troubleshooting</h2>
+        <table>
+          <tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr>
+          <tr>
+            <td><code>Field required [type=missing] … SECRET_KEY</code></td>
+            <td><code>SECRET_KEY</code> not set on Render.</td>
+            <td>Add it (≥32 chars) in Environment → redeploy.</td>
+          </tr>
+          <tr>
+            <td><code>ModuleNotFoundError: No module named 'psycopg'</code></td>
+            <td>Service running OLD code, or a plain <code>postgresql://</code> URL on a build before the normalizer.</td>
+            <td>Redeploy the latest commit. Current code auto-converts to <code>+asyncpg</code> — just paste Neon's raw URL.</td>
+          </tr>
+          <tr>
+            <td><code>can't find '__main__' module in '…/alembic'</code></td>
+            <td>Ran <code>python alembic upgrade head</code> (executes the folder).</td>
+            <td>Use <code>alembic upgrade head</code> or <code>python -m alembic upgrade head</code>.</td>
+          </tr>
+          <tr>
+            <td>Root URL returns <code>{"detail":"Not Found"}</code></td>
+            <td>Not an error — there's no route at <code>/</code>.</td>
+            <td>Hit <code>/api/health</code>; it confirms the app is up.</td>
+          </tr>
+          <tr>
+            <td><code>SECRET_KEY</code> rejected (ValueError)</td>
+            <td>Value is empty, a known placeholder, or under 32 chars.</td>
+            <td>Use a real random ≥32-char value.</td>
+          </tr>
+          <tr>
+            <td>Log shows <code>Bootstrap SKIPPED</code></td>
+            <td><code>BOOTSTRAP_EMAIL</code>/<code>BOOTSTRAP_PASSWORD</code> unset or placeholder.</td>
+            <td>Set strong values → redeploy → account is created.</td>
+          </tr>
+          <tr>
+            <td>CORS errors in browser console</td>
+            <td>Render <code>CORS_ORIGINS</code> doesn't match the Vercel origin exactly.</td>
+            <td>Set it to the exact scheme + host (no trailing slash) → redeploy backend.</td>
+          </tr>
+          <tr>
+            <td>First request after idle takes ~50s</td>
+            <td>Render free tier cold start.</td>
+            <td>Expected on the free plan; upgrade for always-on.</td>
+          </tr>
+          <tr>
+            <td>Logins suddenly invalid</td>
+            <td><code>SECRET_KEY</code> was changed.</td>
+            <td>Keep it stable; restore the original value.</td>
+          </tr>
+        </table>
+      </section>
+
+      <section id="envref">
+        <h2><span class="num">7</span>Environment variable reference</h2>
+        <table>
+          <tr><th>Var</th><th>Used by</th><th>Required</th><th>Default</th><th>Notes</th></tr>
+          <tr><td><code>DATABASE_URL</code></td><td>backend</td><td><span class="req">yes</span></td><td>local Postgres DSN</td><td>Paste Neon's raw URL; auto-normalized to asyncpg + SSL.</td></tr>
+          <tr><td><code>SECRET_KEY</code></td><td>backend</td><td><span class="req">yes</span></td><td>—</td><td>≥32 chars, never a placeholder. Signs JWTs — keep stable.</td></tr>
+          <tr><td><code>ACCESS_TOKEN_EXPIRE_MIN</code></td><td>backend</td><td><span class="opt">no</span></td><td><code>60</code></td><td>Access-token lifetime (minutes).</td></tr>
+          <tr><td><code>MFA_PENDING_EXPIRE_MIN</code></td><td>backend</td><td><span class="opt">no</span></td><td><code>5</code></td><td>MFA challenge window.</td></tr>
+          <tr><td><code>CORS_ORIGINS</code></td><td>backend</td><td><span class="req">yes*</span></td><td><code>http://localhost:5173</code></td><td>Comma-separated origins. *Required for the deployed browser frontend.</td></tr>
+          <tr><td><code>BOOTSTRAP_EMAIL</code></td><td>backend</td><td><span class="req">yes</span></td><td>—</td><td>Seeds the single account on startup.</td></tr>
+          <tr><td><code>BOOTSTRAP_PASSWORD</code></td><td>backend</td><td><span class="req">yes</span></td><td>—</td><td>Strong password; placeholders are refused.</td></tr>
+          <tr><td><code>VITE_API_BASE_URL</code></td><td>frontend</td><td><span class="req">yes*</span></td><td><code>/api</code></td><td>Absolute Render URL + <code>/api</code> in prod. *Build-time — redeploy after changes.</td></tr>
+        </table>
+      </section>
+
+      <footer>
+        Generated for the piigacourse project · Neon → Render → Vercel · keep alongside README.md &amp; ARCHITECTURE.md
+      </footer>
+    </main>
+  </div>
+</div>
+</body>
+</html>
