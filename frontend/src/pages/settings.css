@@ -1,0 +1,101 @@
+/* ==========================================================================
+   piigacourse — Settings page tweaks. Consumes stone + nerd tokens.
+   ========================================================================== */
+
+.settings__col {
+  max-width: 560px;
+}
+
+.settings__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.settings__row--between {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.settings__row-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+.settings__row-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: var(--radius-sm);
+  color: var(--app-green-ink);
+  background: var(--app-green-1);
+  border: 1px solid var(--border);
+}
+.settings__row-label {
+  font-weight: 600;
+  color: var(--text);
+}
+.settings__hint {
+  font-size: 0.8125rem;
+  margin-top: 2px;
+}
+.settings__email {
+  margin-top: 2px;
+  font-size: 0.875rem;
+  color: var(--text);
+  word-break: break-all;
+}
+
+/* ---- MFA badge with status dot ------------------------------------------ */
+.settings__mfa-badge {
+  align-self: center;
+}
+.settings__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex: none;
+}
+.settings__dot--on {
+  background: var(--app-green-ring);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--app-green-ring) 28%, transparent);
+}
+.settings__mfa-body {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+/* ---- Enroll flow -------------------------------------------------------- */
+.settings__qr {
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: #ffffff;
+  padding: 4px;
+  align-self: flex-start;
+}
+.settings__secret {
+  word-break: break-all;
+}
+.settings__secret-code {
+  font-family: var(--app-mono);
+  font-size: 0.8125rem;
+  padding: 2px 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+}
+.settings__code-input {
+  letter-spacing: 0.3em;
+  font-size: 1rem;
+}
+.settings__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}

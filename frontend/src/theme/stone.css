@@ -1,0 +1,123 @@
+/* ==========================================================================
+   piigacourse — Design Tokens ("stone" theme)
+   Warm-neutral palette inspired by the shadcn "stone" theme.
+   Light mode is primary; dark mode values live in the `.dark` block.
+
+   Source of truth for styling. Components consume these tokens only —
+   no hard-coded colors, radii, or shadows in component code.
+   See THEME.md for per-component token mapping.
+   ========================================================================== */
+
+:root {
+  /* ---- Surfaces / backgrounds (warm light greys/beige) ---------------- */
+  --bg:         #FAFAF9;  /* oklch(0.985 0.001 106.42) — app canvas (stone-50)  */
+  --surface:    #FFFFFF;  /* oklch(1 0 0)               — cards, popovers, sheets */
+  --surface-2:  #F5F5F4;  /* oklch(0.970 0.001 106.42) — inset/hover/muted fills (stone-100) */
+
+  /* ---- Borders / dividers (subtle warm) ------------------------------- */
+  --border:     #E7E5E4;  /* oklch(0.923 0.003 48.72)  — card & input borders (stone-200) */
+
+  /* ---- Text ----------------------------------------------------------- */
+  --text:       #1C1917;  /* oklch(0.216 0.006 56.04)  — near-black warm (stone-900) */
+  --muted:      #78716C;  /* oklch(0.553 0.013 58.07)  — secondary/placeholder (stone-500) */
+
+  /* ---- Accent (stone primary = dark warm-neutral) --------------------- */
+  --accent:        #1C1917;  /* oklch(0.216 0.006 56.04) — primary buttons, focus ring (stone-900) */
+  --accent-fg:     #FAFAF9;  /* oklch(0.985 0.001 106.42) — text/icons ON --accent (stone-50) */
+  --accent-subtle: #F0EEEC;  /* oklch(0.948 0.002 67.8)  — tinted fill: studied day, selected, soft chips */
+
+  /* ---- Radius (rounded cards/controls) -------------------------------- */
+  --radius:    0.625rem;            /* 10px — base radius (Card, Input, Button) */
+  --radius-sm: calc(var(--radius) - 4px); /*  6px — Badge, small controls */
+  --radius-lg: calc(var(--radius) + 4px); /* 14px — large panels, modals */
+
+  /* ---- Shadows (soft, warm-tinted) ------------------------------------ */
+  --shadow-sm: 0 1px 2px 0 rgba(28, 25, 23, 0.05);
+  --shadow-md: 0 2px 4px -1px rgba(28, 25, 23, 0.06),
+               0 4px 12px -2px rgba(28, 25, 23, 0.08);
+
+  /* ---- Status tints (muted, stone-compatible) ------------------------- */
+  /* Each status has a subtle background (-bg) + readable foreground (-fg). */
+  --status-planned-bg:     #F5F5F4;  /* warm grey  — neutral, not started */
+  --status-planned-fg:     #57534E;  /* stone-600  */
+  --status-in-progress-bg: #EAF1F4;  /* muted slate-blue — active */
+  --status-in-progress-fg: #3F5A66;
+  --status-completed-bg:   #EAF1EC;  /* muted sage-green — done */
+  --status-completed-fg:   #3F5F49;
+  --status-paused-bg:      #F6F0E8;  /* muted warm amber — on hold */
+  --status-paused-fg:      #6B5733;
+}
+
+/* ==========================================================================
+   Dark mode — warm dark-neutral. Apply via <html class="dark"> (or :root.dark).
+   Accent inverts to a near-white warm so primary controls stay high-contrast.
+   ========================================================================== */
+.dark {
+  --bg:         #1C1917;  /* oklch(0.216 0.006 56.04)  — app canvas (stone-900) */
+  --surface:    #292524;  /* oklch(0.268 0.007 34.30)  — cards (stone-800) */
+  --surface-2:  #322E2C;  /* slightly lifted inset/hover */
+  --border:     #44403C;  /* oklch(0.342 0.008 49.0)   — borders (stone-700) */
+
+  --text:       #FAFAF9;  /* oklch(0.985 0.001 106.42) — near-white warm (stone-50) */
+  --muted:      #A8A29E;  /* oklch(0.709 0.010 56.26)  — secondary (stone-400) */
+
+  --accent:        #FAFAF9;  /* near-white — primary on dark */
+  --accent-fg:     #1C1917;  /* text/icons ON --accent */
+  --accent-subtle: #2E2A28;  /* tinted fill for studied day / selected */
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.40);
+  --shadow-md: 0 2px 4px -1px rgba(0, 0, 0, 0.45),
+               0 4px 12px -2px rgba(0, 0, 0, 0.55);
+
+  --status-planned-bg:     #322E2C;
+  --status-planned-fg:     #D6D3D1;
+  --status-in-progress-bg: #25333A;
+  --status-in-progress-fg: #A9C5D2;
+  --status-completed-bg:   #233328;
+  --status-completed-fg:   #A7CDB2;
+  --status-paused-bg:      #352B1E;
+  --status-paused-fg:      #D9BE8C;
+}
+
+/* ==========================================================================
+   Base reset — minimal. Applies canvas + text + default font stack.
+   Spacing scale (4px base): 4 8 12 16 24 32 48 64. Use multiples of 4.
+   Type scale: 12 / 14(base) / 16 / 20 / 24 / 30 px. Line-height 1.5 body, 1.25 headings.
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  font-size: 0.875rem;      /* 14px base */
+  line-height: 1.5;
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono",
+    Menlo, Consolas, monospace;
+}
+
+/* Consistent, accessible focus ring driven by the accent token. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}

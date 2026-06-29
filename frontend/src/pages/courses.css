@@ -1,0 +1,20 @@
+/* ==========================================================================
+   piigacourse — Courses page tweaks. Consumes stone + nerd tokens.
+   ========================================================================== */
+
+.courses__panel {
+  margin-top: 0;
+}
+
+.courses__empty {
+  margin: 0;
+  padding: 8px 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+/* The header Add-course button keeps the green activity accent on its + icon
+   without hijacking the stone primary fill. */
+.courses .page__header .btn--primary svg {
+  color: currentColor;
+}

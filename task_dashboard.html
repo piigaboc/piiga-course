@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>piigacourse &middot; Task Dashboard</title>
+<style>
+  :root{
+    --bg:#f4f7f5; --surface:#fff; --border:#e2e8e5; --text:#16201b; --muted:#5b6b63;
+    --primary:#13784a; --primary-soft:#e3f2ea; --primary-hover:#0f6b43;
+    --warn:#b9770e; --warn-soft:#fdf3e0;
+    --radius:14px; --shadow:0 10px 30px -18px rgba(22,32,27,.5);
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+  .wrap{max-width:1120px;margin:0 auto;padding:32px 20px 64px}
+  header{display:flex;flex-wrap:wrap;align-items:baseline;gap:12px 18px;margin-bottom:6px}
+  h1{font-size:1.7rem;margin:0}
+  .sub{color:var(--muted);margin:2px 0 0}
+  .meta{margin-left:auto;color:var(--muted);font-size:.85rem;text-align:right}
+  .pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.72rem;font-weight:600;
+    letter-spacing:.02em;border:1px solid transparent;white-space:nowrap}
+  .pill.done{background:var(--primary-soft);color:var(--primary-hover);border-color:#bfe0cf}
+  .pill.prog{background:var(--warn-soft);color:var(--warn);border-color:#f3d9a6}
+
+  .stat-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin:22px 0 28px}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px 18px;box-shadow:var(--shadow)}
+  .stat .n{font-size:1.5rem;font-weight:700;line-height:1}
+  .stat .l{color:var(--muted);font-size:.78rem;margin-top:6px}
+
+  h2{font-size:1.05rem;margin:30px 0 12px;display:flex;align-items:center;gap:8px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow);overflow:hidden}
+  table{width:100%;border-collapse:collapse;font-size:.9rem}
+  th,td{text-align:left;padding:12px 16px;vertical-align:top;border-bottom:1px solid var(--border)}
+  th{background:#fafcfb;color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}
+  tr:last-child td{border-bottom:none}
+  td .agent{font-weight:600;white-space:nowrap}
+  td.result{color:var(--muted);white-space:nowrap}
+  td.empty{color:var(--muted);font-style:italic;text-align:center;padding:28px 16px}
+  code{font-family:var(--mono);font-size:.82em;background:#eef2f0;padding:1px 6px;border-radius:6px}
+  a{color:var(--primary-hover)}
+  .foot{color:var(--muted);font-size:.8rem;margin-top:28px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>piigacourse &mdash; Task Dashboard</h1>
+      <p class="sub">Auto-generated task ledger &middot; sourced from <code>.claude/agent-state/tasks.jsonl</code></p>
+    </div>
+    <div class="meta">
+      Last updated 2026-06-28 22:28
+    </div>
+  </header>
+
+  <div class="stat-row">
+    <div class="stat"><div class="n">10</div><div class="l">Total tasks</div></div>
+    <div class="stat"><div class="n">10</div><div class="l">Done</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">In progress</div></div>
+  </div>
+
+  <h2>Task history</h2>
+  <div class="card"><table>
+    <tr><th>ID</th><th>Agent</th><th>Task</th><th>Status</th><th>Started</th><th>Finished</th></tr>
+    <tr>
+      <td><code>20260628-222721-666-reviewer</code></td>
+      <td><span class="agent">reviewer</span></td>
+      <td>Security correctness review</td>
+      <td><span class="pill done">done</span></td>
+      <td class="result">2026-06-28 22:27:21</td>
+      <td class="result">2026-06-28 22:28:34</td>
+    </tr>
+    <tr>
+      <td><code>20260628-221758-080-frontend</code></td>
+      <td><span class="agent">frontend</span></td>
+      <td>Frontend feature pages</td>
+      <td><span class="pill done">done</span></td>
+      <td class="result">2026-06-28 22:17:58</td>
+      <td class="result">2026-06-28 22:27:00</td>
+    </tr>
+    <tr>
+      <td><code>20260628-221140-978-frontend</code></td>
+      <td><span class="agent">frontend</span></td>
+      <td>Frontend scaffold theme auth</td>
+      <td><span class="pill done">done</span></td>
+      <td class="result">2026-06-28 22:11:40</td>
+      <td class="result">2026-06-28 22:17:21</td>
+    </tr>
+    <tr>
+      <td><code>20260628-220600-876-backend</code></td>
+      <td><span class="agent">backend</span></td>
+      <td>Courses sessions stats endpoints</td>
+      <td><span class="pill done">done</span></td>
+      <td class="result">2026-06-28 22:06:00</td>
+      <td class="result">2026-06-28 22:11:11</td>
+    </tr>
+    <tr>
+      <td><code>20260628-220236-956-backend</code></td>
+      <td><span class="agent">backend</span></td>
+      <td>Auth and TOTP MFA endpoints</td>
+      <td><span class="pill done">done</span></td>
+      <td class="result">2026-06-28 22:02:36</td>
+      <td class="result">2026-06-28 22:05:41</td>
+    </tr>
+    <tr>
+      <td><code>20260628-215931-701-backend</code></td>
+      <td><span class="agent">backend</span></td>
+      <td>Models, Alembic, bootstrap</td>
+      <td><span class="pill done">done</span></td>
+      <td class="result">2026-06-28 21:59:31</td>
+      <td class="result">2026-06-28 22:02:06</td>
+    </tr>
+    <tr>
+      <td><code>20260628-215750-801-devops</code></td>
+      <td><span class="agent">devops</span></td>
+      <td>Docker Postgres dev setup</td>
+      <td><span class="pill done">done</span></td>
+      <td class="result">2026-06-28 21:57:50</td>
+      <td class="result">2026-06-28 21:58:42</td>
+    </tr>
+    <tr>
+      <td><code>20260628-215743-265-backend</code></td>
+      <td><span class="agent">backend</span></td>
+      <td>Backend scaffold config db</td>
+      <td><span class="pill done">done</span></td>
+      <td class="result">2026-06-28 21:57:43</td>
+      <td class="result">2026-06-28 21:59:00</td>
+    </tr>
+    <tr>
+      <td><code>20260628-215729-823-designer</code></td>
+      <td><span class="agent">designer</span></td>
+      <td>Stone theme design tokens</td>
+      <td><span class="pill done">done</span></td>
+      <td class="result">2026-06-28 21:57:29</td>
+      <td class="result">2026-06-28 21:59:07</td>
+    </tr>
+    <tr>
+      <td><code>20260628-215618-912-lead</code></td>
+      <td><span class="agent">lead</span></td>
+      <td>Routing plan for course tracker</td>
+      <td><span class="pill done">done</span></td>
+      <td class="result">2026-06-28 21:56:18</td>
+      <td class="result">2026-06-28 21:57:13</td>
+    </tr>
+  </table></div>
+
+  <p class="foot">Auto-generated by the task-ledger SubagentStop hook &middot; companion: <a href="kanban_board.html">kanban_board.html</a></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+/* ==========================================================================
+   piigacourse — Dashboard page tweaks. Consumes stone + nerd tokens.
+   ========================================================================== */
+
+.dash__panel {
+  margin-top: 24px;
+}
+
+.dash__empty {
+  margin: 0;
+  padding: 8px 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+/* ---- Stat tile loading skeletons ---------------------------------------- */
+.dash__stat-skel {
+  align-items: center;
+}
+.dash__stat-skel-icon {
+  width: 40px;
+  height: 40px;
+  flex: none;
+}
+.dash__stat-skel-body {
+  display: grid;
+  gap: 8px;
+  flex: 1;
+}
+.dash__stat-skel-num {
+  height: 28px;
+  width: 56px;
+}
+.dash__stat-skel-label {
+  height: 12px;
+  width: 90px;
+}

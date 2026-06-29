@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>piigacourse &middot; Kanban</title>
+<style>
+  :root {
+    --bg: #e9ebee;
+    --panel: #f5f6f8;
+    --panel-2: #ffffff;
+    --border: #d3d7de;
+    --text: #1f2430;
+    --muted: #6b7280;
+    --planned: #6b7280;
+    --backlog: #a855f7;
+    --progress: #3b82f6;
+    --done: #22c55e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  header {
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  header h1 { font-size: 18px; margin: 0; font-weight: 650; }
+  header .project { color: var(--progress); font-weight: 600; }
+  header .meta { color: var(--muted); font-size: 13px; margin-left: auto; display: flex; gap: 14px; align-items: center; }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 24px 28px;
+    align-items: start;
+  }
+  @media (max-width:1080px){.board{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:640px){.board{grid-template-columns:1fr}}
+  .column {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    min-height: 120px;
+  }
+  .column h2 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: .06em;
+    margin: 0 0 14px; display: flex; align-items: center; gap: 8px; color: var(--muted);
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .count { margin-left: auto; background: var(--panel-2); color: var(--muted);
+           border-radius: 20px; padding: 1px 9px; font-size: 12px; }
+  .card {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-left-width: 3px;
+    border-radius: 9px;
+    padding: 12px 13px;
+    margin-bottom: 11px;
+  }
+  .card:last-child { margin-bottom: 0; }
+  .card .name { font-weight: 650; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .card .order { color: var(--muted); font-size: 11px; font-weight: 600;
+                 background: var(--panel); border-radius: 5px; padding: 1px 6px; margin-left: auto; }
+  .card .role { color: var(--muted); font-size: 12px; margin: 6px 0 8px; line-height: 1.4; }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
+  .tag { font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 20px;
+         background: var(--panel); color: var(--muted); border: 1px solid var(--border); }
+  .empty-col { color: var(--muted); font-size: 13px; font-style: italic; padding: 4px; }
+  footer { color: var(--muted); font-size: 12px; padding: 4px 28px 28px; }
+  code { background: var(--panel-2); padding: 1px 6px; border-radius: 5px; }
+  a { color: var(--progress); }
+</style>
+</head>
+<body>
+<header>
+  <h1>piigacourse &middot; <span class="project">Kanban</span></h1>
+  <div class="meta">
+    <span>updated 2026-06-28 22:28</span>
+  </div>
+</header>
+
+<div class="board">
+  <div class="column">
+    <h2><span class="dot" style="background:var(--planned)"></span>Planned<span class="count">0</span></h2>
+    <div class="empty-col">&mdash;</div>
+  </div>
+  <div class="column">
+    <h2><span class="dot" style="background:var(--backlog)"></span>Backlog<span class="count">0</span></h2>
+    <div class="empty-col">&mdash;</div>
+  </div>
+  <div class="column">
+    <h2><span class="dot" style="background:var(--progress)"></span>In Progress<span class="count">0</span></h2>
+    <div class="empty-col">&mdash;</div>
+  </div>
+  <div class="column">
+    <h2><span class="dot" style="background:var(--done)"></span>Done<span class="count">10</span></h2>
+      <div class="card" style="border-left-color:var(--done)">
+        <div class="name">Security correctness review<span class="order">20260628-222721-666-reviewer</span></div>
+        <div class="role">reviewer</div>
+        <div class="tags"><span class="tag">reviewer</span></div>
+      </div>
+      <div class="card" style="border-left-color:var(--done)">
+        <div class="name">Frontend feature pages<span class="order">20260628-221758-080-frontend</span></div>
+        <div class="role">frontend</div>
+        <div class="tags"><span class="tag">frontend</span></div>
+      </div>
+      <div class="card" style="border-left-color:var(--done)">
+        <div class="name">Frontend scaffold theme auth<span class="order">20260628-221140-978-frontend</span></div>
+        <div class="role">frontend</div>
+        <div class="tags"><span class="tag">frontend</span></div>
+      </div>
+      <div class="card" style="border-left-color:var(--done)">
+        <div class="name">Courses sessions stats endpoints<span class="order">20260628-220600-876-backend</span></div>
+        <div class="role">backend</div>
+        <div class="tags"><span class="tag">backend</span></div>
+      </div>
+      <div class="card" style="border-left-color:var(--done)">
+        <div class="name">Auth and TOTP MFA endpoints<span class="order">20260628-220236-956-backend</span></div>
+        <div class="role">backend</div>
+        <div class="tags"><span class="tag">backend</span></div>
+      </div>
+      <div class="card" style="border-left-color:var(--done)">
+        <div class="name">Models, Alembic, bootstrap<span class="order">20260628-215931-701-backend</span></div>
+        <div class="role">backend</div>
+        <div class="tags"><span class="tag">backend</span></div>
+      </div>
+      <div class="card" style="border-left-color:var(--done)">
+        <div class="name">Docker Postgres dev setup<span class="order">20260628-215750-801-devops</span></div>
+        <div class="role">devops</div>
+        <div class="tags"><span class="tag">devops</span></div>
+      </div>
+      <div class="card" style="border-left-color:var(--done)">
+        <div class="name">Backend scaffold config db<span class="order">20260628-215743-265-backend</span></div>
+        <div class="role">backend</div>
+        <div class="tags"><span class="tag">backend</span></div>
+      </div>
+      <div class="card" style="border-left-color:var(--done)">
+        <div class="name">Stone theme design tokens<span class="order">20260628-215729-823-designer</span></div>
+        <div class="role">designer</div>
+        <div class="tags"><span class="tag">designer</span></div>
+      </div>
+      <div class="card" style="border-left-color:var(--done)">
+        <div class="name">Routing plan for course tracker<span class="order">20260628-215618-912-lead</span></div>
+        <div class="role">lead</div>
+        <div class="tags"><span class="tag">lead</span></div>
+      </div>
+  </div>
+</div>
+<footer>Auto-generated task ledger &middot; columns derived from task status &middot; see also <a href="task_dashboard.html">task_dashboard.html</a>.</footer>
+</body>
+</html>

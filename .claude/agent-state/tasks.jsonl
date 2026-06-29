@@ -1,0 +1,11 @@
+{"id":"20260628-215618-912-lead","agent":"lead","task":"Routing plan for course tracker","status":"done","startedAt":"2026-06-28 21:56:18","finishedAt":"2026-06-28 21:57:13"}
+{"id":"20260628-215729-823-designer","agent":"designer","task":"Stone theme design tokens","status":"done","startedAt":"2026-06-28 21:57:29","finishedAt":"2026-06-28 21:59:07"}
+{"id":"20260628-215743-265-backend","agent":"backend","task":"Backend scaffold config db","status":"done","startedAt":"2026-06-28 21:57:43","finishedAt":"2026-06-28 21:59:00"}
+{"id":"20260628-215750-801-devops","agent":"devops","task":"Docker Postgres dev setup","status":"done","startedAt":"2026-06-28 21:57:50","finishedAt":"2026-06-28 21:58:42"}
+{"id":"20260628-215931-701-backend","agent":"backend","task":"Models, Alembic, bootstrap","status":"done","startedAt":"2026-06-28 21:59:31","finishedAt":"2026-06-28 22:02:06"}
+{"id":"20260628-220236-956-backend","agent":"backend","task":"Auth and TOTP MFA endpoints","status":"done","startedAt":"2026-06-28 22:02:36","finishedAt":"2026-06-28 22:05:41"}
+{"id":"20260628-220600-876-backend","agent":"backend","task":"Courses sessions stats endpoints","status":"done","startedAt":"2026-06-28 22:06:00","finishedAt":"2026-06-28 22:11:11"}
+{"id":"20260628-221140-978-frontend","agent":"frontend","task":"Frontend scaffold theme auth","status":"done","startedAt":"2026-06-28 22:11:40","finishedAt":"2026-06-28 22:17:21"}
+{"id":"20260628-221758-080-frontend","agent":"frontend","task":"Frontend feature pages","status":"done","startedAt":"2026-06-28 22:17:58","finishedAt":"2026-06-28 22:27:00"}
+{"id":"20260628-222721-666-reviewer","agent":"reviewer","task":"Security correctness review","status":"done","startedAt":"2026-06-28 22:27:21","finishedAt":"2026-06-28 22:28:34"}
+{"id":"20260628-222901-142-backend","agent":"backend","task":"Fix security review findings","status":"in-progress","startedAt":"2026-06-28 22:29:01","finishedAt":""}

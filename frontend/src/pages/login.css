@@ -1,0 +1,264 @@
+/* ==========================================================================
+   piigacourse — Login screen styling + tasteful, stone-appropriate motion.
+   Consumes ONLY tokens from theme/stone.css. No hard-coded colors/radii/shadows.
+   All movement is decorative and is removed under prefers-reduced-motion.
+   ========================================================================== */
+
+/* ---- Layout shell -------------------------------------------------------- */
+.login {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: 24px;
+  overflow: hidden;
+}
+
+/* Soft, low-key animated stone blobs behind the card. Decorative only. */
+.login__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.login__blob {
+  position: absolute;
+  width: 42vmax;
+  height: 42vmax;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+  will-change: transform;
+}
+.login__blob--1 {
+  top: -14vmax;
+  left: -10vmax;
+  background: var(--accent-subtle);
+  animation: login-drift-a 22s ease-in-out infinite;
+}
+.login__blob--2 {
+  bottom: -16vmax;
+  right: -12vmax;
+  background: var(--surface-2);
+  animation: login-drift-b 26s ease-in-out infinite;
+}
+
+/* ---- Card --------------------------------------------------------------- */
+.login__card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 360px;
+  animation: login-card-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.login__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.login__logo {
+  /* stagger: logo first */
+  animation: login-rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.08s;
+  color: var(--text);
+}
+.login__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text);
+  animation: login-rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.16s;
+}
+.login__subtitle {
+  color: var(--muted);
+  margin: 0;
+  animation: login-rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.24s;
+}
+
+/* ---- Step transition (credentials <-> mfa) ------------------------------ */
+.login__steps {
+  position: relative;
+}
+.login__step {
+  animation: login-step-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.login__form {
+  display: grid;
+  gap: 16px;
+}
+
+/* Error message: gentle settle so the announcement is not jarring. */
+.login__error {
+  animation: login-fade 0.2s ease both;
+}
+
+/* ---- Logo idle / draw-in animation -------------------------------------- */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo__mark {
+  display: block;
+}
+.logo__wordmark {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+/* Draw-in: book strokes trace on, steps rise, spark pops. Idle: soft float. */
+.logo__mark--animated .logo__book {
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  animation: logo-draw 0.9s ease forwards;
+  animation-delay: 0.15s;
+}
+.logo__mark--animated .logo__step {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  transform: scaleY(0);
+  animation: logo-grow 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.logo__mark--animated .logo__step--1 {
+  animation-delay: 0.55s;
+}
+.logo__mark--animated .logo__step--2 {
+  animation-delay: 0.68s;
+}
+.logo__mark--animated .logo__step--3 {
+  animation-delay: 0.81s;
+}
+.logo__mark--animated .logo__spark {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0);
+  animation: logo-spark 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    logo-spark-pulse 3.6s ease-in-out 1.6s infinite;
+  animation-delay: 1s, 1s;
+}
+
+/* ---- Keyframes ----------------------------------------------------------- */
+@keyframes login-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes login-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes login-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes login-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes logo-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes logo-grow {
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes logo-spark {
+  0% {
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes logo-spark-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.12);
+  }
+}
+@keyframes login-drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(4vmax, 3vmax) scale(1.08);
+  }
+}
+@keyframes login-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-3vmax, -4vmax) scale(1.06);
+  }
+}
+
+/* ---- Reduced motion: hard requirement — instant, no movement ------------- */
+@media (prefers-reduced-motion: reduce) {
+  .login__card,
+  .login__logo,
+  .login__title,
+  .login__subtitle,
+  .login__step,
+  .login__error,
+  .login__blob--1,
+  .login__blob--2,
+  .logo__mark--animated .logo__book,
+  .logo__mark--animated .logo__step,
+  .logo__mark--animated .logo__spark {
+    animation: none;
+  }
+  /* Ensure draw-in/grow elements rest in their final visible state. */
+  .logo__mark--animated .logo__book {
+    stroke-dashoffset: 0;
+  }
+  .logo__mark--animated .logo__step {
+    transform: scaleY(1);
+  }
+  .logo__mark--animated .logo__spark {
+    transform: scale(1);
+  }
+}

@@ -1,0 +1,394 @@
+/* ==========================================================================
+   piigacourse — Calendar page styling ("nerdy" redesign)
+   Consumes the warm-stone tokens (stone.css) and layers a GREEN
+   GitHub-contribution heatmap scale on top, scoped to the calendar only.
+   All selectors are scoped under .cal so they win over the legacy
+   .calendar__* rules in components.css regardless of import order.
+   ========================================================================== */
+
+.cal {
+  /* ---- Mono stack + GREEN heatmap scale -----------------------------------
+     These now ALIAS the shared nerd design-system tokens (styles/nerd.css)
+     so the values live in one place. The fallbacks preserve the exact prior
+     appearance if nerd.css were ever absent. The .cal__* selectors below are
+     unchanged and keep consuming the --cal-* names.                          */
+  --cal-mono: var(--app-mono, ui-monospace, "SF Mono", "Cascadia Code",
+    "JetBrains Mono", "Roboto Mono", Menlo, Consolas, monospace);
+
+  --cal-green-0: var(--app-green-0, var(--surface-2));
+  --cal-green-1: var(--app-green-1, #d6f0dd);
+  --cal-green-2: var(--app-green-2, #8fd9a8);
+  --cal-green-3: var(--app-green-3, #3fb46b);
+  --cal-green-4: var(--app-green-4, #1f8a4c);
+  --cal-green-ink: var(--app-green-ink, #0f5c30);
+  --cal-green-ring: var(--app-green-ring, #2fa45e);
+}
+
+/* ---- Header bar ---------------------------------------------------------- */
+.cal__titlewrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cal__titleicon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  color: var(--cal-green-ink);
+  background: var(--cal-green-1);
+  border: 1px solid var(--border);
+  flex: none;
+}
+.cal .page__title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+/* ---- Stat strip (nerd stats near the header) ----------------------------- */
+.cal__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 0;
+}
+.cal__stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+.cal__stat svg {
+  flex: none;
+  color: var(--cal-green-ring);
+}
+.cal__stat-num {
+  font-family: var(--cal-mono);
+  font-size: 1rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  line-height: 1;
+}
+.cal__stat-label {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.cal__stat--streak .cal__stat-num {
+  color: var(--cal-green-ink);
+}
+
+/* ---- Nav (prev / month / next / today) ----------------------------------- */
+.cal__nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cal__monthlabel {
+  min-width: 168px;
+  text-align: center;
+  font-family: var(--cal-mono);
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+.cal__chev {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---- The bordered Card panel --------------------------------------------- */
+.cal__panel {
+  margin-top: 20px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.cal__panel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--cal-mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.cal__panel-bar .cal__dots {
+  display: inline-flex;
+  gap: 6px;
+}
+.cal__panel-bar .cal__dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  background: var(--border);
+}
+.cal__panel-bar .cal__dots i:nth-child(1) { background: #e0726a; }
+.cal__panel-bar .cal__dots i:nth-child(2) { background: #e3b341; }
+.cal__panel-bar .cal__dots i:nth-child(3) { background: var(--cal-green-ring); }
+.cal__panel-body {
+  padding: 14px;
+}
+
+/* ---- Grid ---------------------------------------------------------------- */
+.cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.cal__weekday {
+  padding: 4px 0 8px;
+  text-align: center;
+  font-family: var(--cal-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+/* ---- Day cell ------------------------------------------------------------ */
+.cal__cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2px;
+  min-height: 68px;
+  padding: 7px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: default;
+  transition: transform 0.12s ease, box-shadow 0.12s ease,
+    border-color 0.12s ease;
+}
+.cal__cell--outside {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+  opacity: 0.45;
+}
+.cal__daynum {
+  font-family: var(--cal-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* ---- Heatmap intensity levels (green) ------------------------------------ */
+.cal__cell--studied {
+  cursor: pointer;
+}
+.cal__cell--l1 { background: var(--cal-green-1); border-color: var(--cal-green-2); }
+.cal__cell--l2 { background: var(--cal-green-2); border-color: var(--cal-green-3); }
+.cal__cell--l3 { background: var(--cal-green-3); border-color: var(--cal-green-4); color: #ffffff; }
+.cal__cell--l4 { background: var(--cal-green-4); border-color: var(--cal-green-4); color: #ffffff; }
+.cal__cell--l3 .cal__minutes,
+.cal__cell--l4 .cal__minutes { color: rgba(255, 255, 255, 0.88); }
+.cal__cell--l3 .cal__daynum,
+.cal__cell--l4 .cal__daynum { color: #ffffff; }
+
+/* studied-day footer line: dot + minutes */
+.cal__meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+.cal__dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  color: var(--cal-green-ink);
+}
+.cal__cell--l3 .cal__dot,
+.cal__cell--l4 .cal__dot { color: #ffffff; }
+.cal__minutes {
+  font-family: var(--cal-mono);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--cal-green-ink);
+  line-height: 1;
+}
+
+/* ---- Hover lift ---------------------------------------------------------- */
+.cal__cell--studied:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: var(--shadow-md);
+  z-index: 2;
+}
+.cal__cell--studied:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---- Today marker -------------------------------------------------------- */
+.cal__cell--today {
+  box-shadow: 0 0 0 2px var(--cal-green-ring);
+  border-color: var(--cal-green-ring);
+}
+.cal__cell--today .cal__daynum::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cal-green-ring);
+}
+.cal__cell--selected {
+  box-shadow: 0 0 0 2px var(--accent);
+  border-color: var(--accent);
+}
+
+/* ---- Tooltip on hover ---------------------------------------------------- */
+.cal__tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  z-index: 10;
+  padding: 6px 9px;
+  white-space: nowrap;
+  font-family: var(--cal-mono);
+  font-size: 0.6875rem;
+  color: var(--accent-fg);
+  background: var(--accent);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.cal__tip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--accent);
+}
+.cal__cell--studied:hover .cal__tip,
+.cal__cell--studied:focus-visible .cal__tip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ---- Legend (Less ▢▢▢▢ More) -------------------------------------------- */
+.cal__legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 14px;
+  font-family: var(--cal-mono);
+  font-size: 0.6875rem;
+  color: var(--muted);
+}
+.cal__legend-swatch {
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+.cal__legend-swatch--0 { background: var(--cal-green-0); }
+.cal__legend-swatch--1 { background: var(--cal-green-1); }
+.cal__legend-swatch--2 { background: var(--cal-green-2); }
+.cal__legend-swatch--3 { background: var(--cal-green-3); }
+.cal__legend-swatch--4 { background: var(--cal-green-4); }
+
+/* ---- Popover (detail card under the grid) -------------------------------- */
+.cal__popover {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--cal-green-2);
+  border-left: 3px solid var(--cal-green-ring);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+.cal__popover-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--cal-mono);
+  font-weight: 600;
+  color: var(--text);
+}
+.cal__popover-head svg { color: var(--cal-green-ring); }
+.cal__popover-meta {
+  margin: 6px 0 0;
+  font-family: var(--cal-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+/* ---- Loading skeleton ---------------------------------------------------- */
+.cal__skel {
+  min-height: 68px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  animation: cal-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes cal-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ---- Entrance animation for studied cells (staggered) -------------------- */
+@keyframes cal-pop {
+  from { opacity: 0; transform: scale(0.82); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.cal__cell--studied {
+  animation: cal-pop 0.32s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  animation-delay: var(--cal-delay, 0ms);
+}
+
+/* ---- Reduced motion ------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .cal__cell,
+  .cal__tip {
+    transition: none;
+  }
+  .cal__cell--studied {
+    animation: none;
+  }
+  .cal__cell--studied:hover {
+    transform: none;
+  }
+  .cal__skel {
+    animation: none;
+  }
+}
+
+/* ---- Small screens ------------------------------------------------------- */
+@media (max-width: 560px) {
+  .cal__cell { min-height: 56px; padding: 5px 6px; }
+  .cal__minutes { display: none; }
+  .cal__monthlabel { min-width: 120px; font-size: 0.85rem; }
+}

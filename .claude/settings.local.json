@@ -1,0 +1,45 @@
+{
+    "hooks":  {
+                  "PreToolUse":  [
+                                     {
+                                         "matcher":  "Task|Agent",
+                                         "hooks":  [
+                                                       {
+                                                           "type":  "command",
+                                                           "shell":  "powershell",
+                                                           "command":  "\u0026 \u0027.\\.claude\\hooks\\agent-status.ps1\u0027 -Status working",
+                                                           "timeout":  20,
+                                                           "statusMessage":  "Marking agent working on dashboard"
+                                                       },
+                                                       {
+                                                           "type":  "command",
+                                                           "shell":  "powershell",
+                                                           "command":  "\u0026 \u0027.\\.claude\\hooks\\task-ledger.ps1\u0027 -Status start",
+                                                           "timeout":  20,
+                                                           "statusMessage":  "Recording task start in ledger"
+                                                       }
+                                                   ]
+                                     }
+                                 ],
+                  "SubagentStop":  [
+                                       {
+                                           "hooks":  [
+                                                         {
+                                                             "type":  "command",
+                                                             "shell":  "powershell",
+                                                             "command":  "\u0026 \u0027.\\.claude\\hooks\\agent-status.ps1\u0027 -Status idle",
+                                                             "timeout":  20,
+                                                             "statusMessage":  "Marking agent idle on dashboard"
+                                                         },
+                                                         {
+                                                             "type":  "command",
+                                                             "shell":  "powershell",
+                                                             "command":  "\u0026 \u0027.\\.claude\\hooks\\task-ledger.ps1\u0027 -Status done",
+                                                             "timeout":  20,
+                                                             "statusMessage":  "Recording task completion in ledger"
+                                                         }
+                                                     ]
+                                       }
+                                   ]
+              }
+}

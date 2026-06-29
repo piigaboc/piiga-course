@@ -1,0 +1,181 @@
+/* ==========================================================================
+   piigacourse — shared "nerdy" developer design system
+   --------------------------------------------------------------------------
+   Promoted from the Calendar page so the whole app shares one design language:
+     - a monospace / tabular-figure font stack (--app-mono)
+     - a GREEN activity/success scale layered on the warm-stone base
+       (--app-green-1..4 + ink/ring), the *purposeful* accent for
+       study / streak / in-progress / MFA-enabled. Stone stays the primary
+       accent (buttons, focus) — green is never a global override.
+     - a terminal-style title bar (.term-titlebar) with red/amber/green
+       "window dots" + a monospace ~/path string, for Card panels.
+     - monospace helpers (.mono / .tnum) and a shared skeleton pulse.
+
+   Consumes ONLY tokens from theme/stone.css. Imported once in main.tsx,
+   before the per-page CSS so pages can consume + override locally.
+   ========================================================================== */
+
+:root {
+  /* ---- Monospace / tabular figure stack ---------------------------------- */
+  --app-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono",
+    "Roboto Mono", Menlo, Consolas, monospace;
+
+  /* ---- GREEN activity/success scale (GitHub-contribution style) ---------- */
+  /* L0 = neutral stone fill; L1..L4 light tint -> saturated green.           */
+  --app-green-0: var(--surface-2); /* no activity — neutral stone fill        */
+  --app-green-1: #d6f0dd;          /* light tint                              */
+  --app-green-2: #8fd9a8;          /* medium                                  */
+  --app-green-3: #3fb46b;          /* strong                                  */
+  --app-green-4: #1f8a4c;          /* saturated                               */
+  --app-green-ink: #0f5c30;        /* readable green text on light tints      */
+  --app-green-ring: #2fa45e;       /* accent ring / icon green                */
+
+  /* Terminal "window" dot colors (red / amber / green). */
+  --term-dot-red: #e0726a;
+  --term-dot-amber: #e3b341;
+  --term-dot-green: var(--app-green-ring);
+}
+
+.dark {
+  --app-green-0: var(--surface-2);
+  --app-green-1: #173a26;
+  --app-green-2: #1e5e39;
+  --app-green-3: #2f9c5b;
+  --app-green-4: #4ed884;
+  --app-green-ink: #8ff0b4;
+  --app-green-ring: #4ed884;
+}
+
+/* ==========================================================================
+   Monospace helpers
+   ========================================================================== */
+.mono {
+  font-family: var(--app-mono);
+  font-variant-numeric: tabular-nums;
+}
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   Terminal-style title bar — red/amber/green dots + a ~/path string.
+   Use inside a bordered, padding-less Card (see Card `bare` + titleBar props,
+   or a panel that sets overflow:hidden). Pair with .term-panel on the Card.
+   ========================================================================== */
+.term-panel {
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.term-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--app-mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.term-titlebar__path {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.term-titlebar__meta {
+  flex: none;
+  color: var(--muted);
+}
+.term-dots {
+  display: inline-flex;
+  gap: 6px;
+  flex: none;
+}
+.term-dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  background: var(--border);
+}
+.term-dots i:nth-child(1) { background: var(--term-dot-red); }
+.term-dots i:nth-child(2) { background: var(--term-dot-amber); }
+.term-dots i:nth-child(3) { background: var(--term-dot-green); }
+
+.term-body {
+  padding: 16px;
+}
+
+/* ==========================================================================
+   Page header — inline SVG icon chip + title, shared across pages.
+   (The Calendar page keeps its own .cal__titleicon for back-compat; new
+   pages use .page__head / .page__icon.)
+   ========================================================================== */
+.page__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.page__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: var(--radius-sm);
+  color: var(--app-green-ink);
+  background: var(--app-green-1);
+  border: 1px solid var(--border);
+}
+.page__greeting {
+  font-family: var(--app-mono);
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.page__greeting strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Shared skeleton pulse
+   ========================================================================== */
+.skel {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  animation: app-pulse 1.4s ease-in-out infinite;
+}
+@keyframes app-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ==========================================================================
+   Shared staggered fade/scale entrance
+   ========================================================================== */
+@keyframes app-rise {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.rise {
+  animation: app-rise 0.34s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+/* ==========================================================================
+   Reduced motion — gate ALL nerd-system animation/transition.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .skel,
+  .rise {
+    animation: none;
+  }
+}

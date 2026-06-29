@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="5">
+  <title>Piiga Product Dev Agents &mdash; Agents Dashboard</title>
+  <style>
+    :root {
+      --bg-base:       #eef0f3;
+      --bg-column:     #e2e5ea;
+      --bg-card:       #ffffff;
+      --border-subtle: #d4d8df;
+      --border-mid:    #c2c7d0;
+
+      --text-primary:  #1f2430;
+      --text-secondary:#4a5168;
+      --text-muted:    #7c8499;
+
+      --c-idle:       #16a34a;
+      --c-idle-dim:   #dcfce7;
+      --c-idle-border:#86efac;
+      --c-idle-text:  #166534;
+
+      --c-working:     #d97706;
+      --c-working-dim: #fef3c7;
+      --c-working-border:#fcd34d;
+      --c-working-text:#92400e;
+
+      --c-blocked:     #dc2626;
+      --c-blocked-dim: #fee2e2;
+      --c-blocked-border:#fca5a5;
+      --c-blocked-text:#991b1b;
+
+      --c-unused:      #6b7280;
+      --c-unused-dim:  #f3f4f6;
+      --c-unused-border:#d1d5db;
+      --c-unused-text: #374151;
+
+      --radius-card:   12px;
+      --radius-col:    14px;
+      --radius-badge:  999px;
+      --accent-bar:    4px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg-base);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 36px 32px 48px;
+      line-height: 1.5;
+    }
+
+    .page-header {
+      margin-bottom: 24px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .header-titles h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text-primary);
+    }
+    .header-titles h1 span { color: var(--c-idle); }
+    .sub {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    .project-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      border: 1px solid var(--border-mid);
+      border-radius: 999px;
+      padding: 5px 12px;
+      white-space: nowrap;
+      align-self: flex-start;
+    }
+    .project-chip::before {
+      content: "";
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--c-idle);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+    @media (max-width: 700px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+    .stat {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      padding: 14px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .stat .stat-val {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+    }
+    .stat .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .stat.s-total .stat-val { color: var(--text-primary); }
+    .stat.s-done  .stat-val { color: var(--c-idle); }
+    .stat.s-prog  .stat-val { color: var(--c-working); }
+    .stat.s-active .stat-val { color: var(--c-blocked); }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin: 32px 0 14px;
+    }
+    .section-title.with-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .quiet-summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+    }
+    .quiet-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-card);
+      border: 1px solid var(--border-mid);
+      border-radius: 999px;
+      padding: 4px 11px;
+      white-space: nowrap;
+    }
+    .quiet-pill.idle   { color: var(--c-idle-text);   background: var(--c-idle-dim);   border-color: var(--c-idle-border); }
+    .quiet-pill.unused { color: var(--c-unused-text); background: var(--c-unused-dim); border-color: var(--c-unused-border); }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 600px)  { .board { grid-template-columns: 1fr; } }
+    .board-empty { grid-column: 1 / -1; }
+
+    .column {
+      background: var(--bg-column);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-col);
+      padding: 12px 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 160px;
+    }
+    .col-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px 8px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 2px;
+    }
+    .col-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+    .col-title.working { color: var(--c-working); }
+    .col-title.idle    { color: var(--c-idle); }
+    .col-title.blocked { color: var(--c-blocked); }
+    .col-title.unused  { color: var(--c-unused); }
+
+    .col-count {
+      font-size: 11px;
+      font-weight: 600;
+      min-width: 22px; height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 0 6px;
+    }
+    .col-count.working { background: var(--c-working-dim); color: var(--c-working-text); border: 1px solid var(--c-working-border); }
+    .col-count.idle    { background: var(--c-idle-dim);    color: var(--c-idle-text);    border: 1px solid var(--c-idle-border); }
+    .col-count.blocked { background: var(--c-blocked-dim); color: var(--c-blocked-text); border: 1px solid var(--c-blocked-border); }
+    .col-count.unused  { background: var(--c-unused-dim);  color: var(--c-unused-text);  border: 1px solid var(--c-unused-border); }
+
+    .card-empty {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 20px 10px;
+      border: 1px dashed var(--border-mid);
+      border-radius: var(--radius-card);
+      font-style: italic;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: row;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .card:hover { transform: translateY(-2px); }
+    .card-accent { width: var(--accent-bar); flex-shrink: 0; background: var(--c-unused); }
+    .card-body { flex: 1; padding: 12px 14px 11px; min-width: 0; }
+
+    .card.idle:hover { box-shadow: 0 6px 18px rgba(22,163,74,0.10), 0 2px 6px rgba(0,0,0,0.06); }
+    .card.working {
+      border-color: var(--c-working-border);
+      box-shadow: 0 0 0 1px rgba(217,119,6,0.15), 0 2px 8px rgba(217,119,6,0.08);
+      animation: working-pulse 2.4s ease-in-out infinite;
+    }
+    .card.working:hover { box-shadow: 0 0 0 1px rgba(217,119,6,0.30), 0 8px 22px rgba(217,119,6,0.12); }
+    .card.blocked { border-color: var(--c-blocked-border); box-shadow: 0 0 0 1px rgba(220,38,38,0.12), 0 2px 8px rgba(220,38,38,0.06); }
+    .card.blocked:hover { box-shadow: 0 0 0 1px rgba(220,38,38,0.24), 0 8px 22px rgba(220,38,38,0.08); }
+    .card.unused { opacity: 0.65; }
+    .card.unused:hover { opacity: 0.88; }
+
+    @keyframes working-pulse {
+      0%, 100% { box-shadow: 0 0 0 1px rgba(217,119,6,0.15), 0 2px 8px rgba(217,119,6,0.08); }
+      50%       { box-shadow: 0 0 0 2px rgba(217,119,6,0.32), 0 4px 18px rgba(217,119,6,0.18); }
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .name {
+      font-weight: 650;
+      font-size: 14px;
+      letter-spacing: -0.1px;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .badge {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      padding: 2px 9px;
+      border-radius: var(--radius-badge);
+      white-space: nowrap;
+      flex-shrink: 0;
+      border: 1px solid transparent;
+    }
+    .badge.idle    { background: var(--c-idle-dim);    color: var(--c-idle-text);    border-color: var(--c-idle-border); }
+    .badge.working { background: var(--c-working-dim); color: var(--c-working-text); border-color: var(--c-working-border); }
+    .badge.blocked { background: var(--c-blocked-dim); color: var(--c-blocked-text); border-color: var(--c-blocked-border); }
+    .badge.unused  { background: var(--c-unused-dim);  color: var(--c-unused-text);  border-color: var(--c-unused-border); }
+
+    .meta-line {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .meta-line:first-of-type {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .meta-key { font-weight: 600; color: var(--text-muted); letter-spacing: 0.1px; }
+    .meta-val { color: var(--text-primary); }
+
+    .roster {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+    @media (max-width: 720px) { .roster { grid-template-columns: 1fr; } }
+    .roster-card {
+      display: flex;
+      flex-direction: row;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .roster-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+    .roster-body { flex: 1; padding: 12px 14px 12px; min-width: 0; }
+    .roster-role {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+
+    .table-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    table.proj-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    table.proj-table thead th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 12px 16px;
+      background: var(--bg-column);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    table.proj-table thead th.num { text-align: right; }
+    table.proj-table tbody td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+    }
+    table.proj-table tbody tr:last-child td { border-bottom: none; }
+    table.proj-table tbody tr:hover td { background: rgba(0,0,0,0.015); }
+    .proj-name { font-weight: 600; }
+    .proj-link {
+      color: #6366f1;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+    .proj-link:hover { color: #4f46e5; border-bottom-color: #6366f1; }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    td.done-num { color: var(--c-idle); font-weight: 600; }
+    td.prog-num { color: var(--c-working); font-weight: 600; }
+    td.work-num { color: var(--c-blocked); font-weight: 600; }
+    tfoot td {
+      padding: 11px 16px;
+      border-top: 2px solid var(--border-mid);
+      font-weight: 700;
+      background: var(--bg-column);
+    }
+    tfoot td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    .footer {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .footer-sep { color: var(--border-mid); }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <div class="header-top">
+      <div class="header-titles">
+        <h1>Piiga <span>Product Dev Agents</span> &mdash; Agents Dashboard</h1>
+        <div class="sub">Aggregated across all 8 piiga projects &mdash; live agents, tasks, and per-project rollups.</div>
+      </div>
+      <div class="project-chip">8 projects</div>
+    </div>
+    <div class="stats">
+      <div class="stat s-total"><div class="stat-val">35</div><div class="stat-label">Total Tasks</div></div>
+      <div class="stat s-done"><div class="stat-val">33</div><div class="stat-label">Done</div></div>
+      <div class="stat s-prog"><div class="stat-val">2</div><div class="stat-label">In Progress</div></div>
+      <div class="stat s-active"><div class="stat-val">1</div><div class="stat-label">Active Agents</div></div>
+    </div>
+  </header>
+
+  <div class="section-title with-summary"><span>Active Subagents</span><span class="quiet-summary"><span class="quiet-pill idle">🟢 idle: 71</span><span class="quiet-pill unused">⚪ unused: 0</span></span></div>
+  <div class="board">
+    <div class="column">
+      <div class="col-header">
+        <span class="col-title working">Working</span>
+        <span class="col-count working">1</span>
+      </div>
+    <div class="card working">
+      <div class="card-accent" style="background:#8b5cf6"></div>
+      <div class="card-body">
+        <div class="card-head">
+          <span class="name">⚙ backend</span>
+          <span class="badge working">🟡 working</span>
+        </div>
+        <div class="meta-line"><span class="meta-key">Project:</span> <span class="meta-val">piigacourse</span></div>
+        <div class="meta-line"><span class="meta-key">Task:</span> <span class="meta-val">Fix security review findings</span></div>
+      </div>
+    </div>
+    </div>
+    <div class="column">
+      <div class="col-header">
+        <span class="col-title blocked">Blocked</span>
+        <span class="col-count blocked">0</span>
+      </div>
+      <div class="card-empty">No agents</div>
+    </div>
+  </div>
+
+  <div class="section-title">Subagents &mdash; Squad Roster</div>
+  <div class="roster">
+    <div class="roster-card">
+      <div class="card-accent" style="background:#6366f1"></div>
+      <div class="roster-body">
+        <div class="card-head">
+          <span class="name">🧭 lead</span>
+          <span class="badge idle">🟢 idle</span>
+        </div>
+        <div class="roster-role">Tech lead / orchestrator — decomposes features, routes steps to specialists (plan only)</div>
+      </div>
+    </div>
+    <div class="roster-card">
+      <div class="card-accent" style="background:#06b6d4"></div>
+      <div class="roster-body">
+        <div class="card-head">
+          <span class="name">📱 mobile</span>
+          <span class="badge idle">🟢 idle</span>
+        </div>
+        <div class="roster-role">Flutter/Dart, iOS/Android native modules, mobile unit tests</div>
+      </div>
+    </div>
+    <div class="roster-card">
+      <div class="card-accent" style="background:#3b82f6"></div>
+      <div class="roster-body">
+        <div class="card-head">
+          <span class="name">🖥 frontend</span>
+          <span class="badge idle">🟢 idle</span>
+        </div>
+        <div class="roster-role">React/Next/TS/Vue, browser ext, HTML/CSS/JS, frontend unit tests</div>
+      </div>
+    </div>
+    <div class="roster-card">
+      <div class="card-accent" style="background:#8b5cf6"></div>
+      <div class="roster-body">
+        <div class="card-head">
+          <span class="name">⚙ backend</span>
+          <span class="badge working">🟡 working in 1 project</span>
+        </div>
+        <div class="roster-role">Python services, DB schema/queries, business logic, API design</div>
+      </div>
+    </div>
+    <div class="roster-card">
+      <div class="card-accent" style="background:#ec4899"></div>
+      <div class="roster-body">
+        <div class="card-head">
+          <span class="name">🎨 designer</span>
+          <span class="badge idle">🟢 idle</span>
+        </div>
+        <div class="roster-role">Design specs, wireframes, component specs, design tokens, a11y review</div>
+      </div>
+    </div>
+    <div class="roster-card">
+      <div class="card-accent" style="background:#f97316"></div>
+      <div class="roster-body">
+        <div class="card-head">
+          <span class="name">🧪 qa</span>
+          <span class="badge idle">🟢 idle</span>
+        </div>
+        <div class="roster-role">Integration/E2E tests, edge-case analysis, regression suites</div>
+      </div>
+    </div>
+    <div class="roster-card">
+      <div class="card-accent" style="background:#14b8a6"></div>
+      <div class="roster-body">
+        <div class="card-head">
+          <span class="name">🔍 reviewer</span>
+          <span class="badge idle">🟢 idle</span>
+        </div>
+        <div class="roster-role">Correctness, code quality, security, perf review (gate before release)</div>
+      </div>
+    </div>
+    <div class="roster-card">
+      <div class="card-accent" style="background:#eab308"></div>
+      <div class="roster-body">
+        <div class="card-head">
+          <span class="name">🔬 researcher</span>
+          <span class="badge idle">🟢 idle</span>
+        </div>
+        <div class="roster-role">Library/API research, prior art, technical trade-offs (reports, no prod code)</div>
+      </div>
+    </div>
+    <div class="roster-card">
+      <div class="card-accent" style="background:#84cc16"></div>
+      <div class="roster-body">
+        <div class="card-head">
+          <span class="name">🚀 devops</span>
+          <span class="badge idle">🟢 idle</span>
+        </div>
+        <div class="roster-role">CI/CD, Jenkins, Docker, deployment, env config</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Projects</div>
+  <div class="table-wrap">
+    <table class="proj-table">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th class="num">Total Tasks</th>
+          <th class="num">Done</th>
+          <th class="num">In Progress</th>
+          <th class="num">Working Agents</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="proj-name"><a class="proj-link" href="../../../piigago/task_dashboard.html">piigago</a></td>
+          <td class="num">0</td>
+          <td class="num done-num">0</td>
+          <td class="num prog-num">0</td>
+          <td class="num work-num">0</td>
+        </tr>
+        <tr>
+          <td class="proj-name"><a class="proj-link" href="../../../piigabook/task_dashboard.html">piigabook</a></td>
+          <td class="num">0</td>
+          <td class="num done-num">0</td>
+          <td class="num prog-num">0</td>
+          <td class="num work-num">0</td>
+        </tr>
+        <tr>
+          <td class="proj-name"><a class="proj-link" href="../../../piigabookepub/task_dashboard.html">piigabookepub</a></td>
+          <td class="num">0</td>
+          <td class="num done-num">0</td>
+          <td class="num prog-num">0</td>
+          <td class="num work-num">0</td>
+        </tr>
+        <tr>
+          <td class="proj-name"><a class="proj-link" href="../../../piigacourse/task_dashboard.html">piigacourse</a></td>
+          <td class="num">11</td>
+          <td class="num done-num">10</td>
+          <td class="num prog-num">1</td>
+          <td class="num work-num">1</td>
+        </tr>
+        <tr>
+          <td class="proj-name"><a class="proj-link" href="../../../piigapet/task_dashboard.html">piigapet</a></td>
+          <td class="num">24</td>
+          <td class="num done-num">23</td>
+          <td class="num prog-num">1</td>
+          <td class="num work-num">0</td>
+        </tr>
+        <tr>
+          <td class="proj-name"><a class="proj-link" href="../../../piigatask/task_dashboard.html">piigatask</a></td>
+          <td class="num">0</td>
+          <td class="num done-num">0</td>
+          <td class="num prog-num">0</td>
+          <td class="num work-num">0</td>
+        </tr>
+        <tr>
+          <td class="proj-name"><a class="proj-link" href="../../../piigaboardparty/task_dashboard.html">piigaboardparty</a></td>
+          <td class="num">0</td>
+          <td class="num done-num">0</td>
+          <td class="num prog-num">0</td>
+          <td class="num work-num">0</td>
+        </tr>
+        <tr>
+          <td class="proj-name"><a class="proj-link" href="../../../bb8_bot_shopping/task_dashboard.html">bb8_bot_shopping</a></td>
+          <td class="num">0</td>
+          <td class="num done-num">0</td>
+          <td class="num prog-num">0</td>
+          <td class="num work-num">0</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>All projects</td>
+          <td class="num">35</td>
+          <td class="num">33</td>
+          <td class="num">2</td>
+          <td class="num">1</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <footer class="footer">
+    <span>Last updated: 2026-06-29 09:50</span>
+    <span class="footer-sep">&middot;</span>
+    <span>auto-refreshes every 5s</span>
+    <span class="footer-sep">&middot;</span>
+    <span>aggregated from 8 projects' DASHBOARD.md + tasks.jsonl</span>
+  </footer>
+
+</body>
+</html>
